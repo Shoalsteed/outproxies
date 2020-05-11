@@ -21,7 +21,8 @@ contacts them. Next, the request (e.g. to Twitter or DuckDuckGo) is sent to the 
 instead of the user and receives a response. It forwards this to the user.
 The outproxy operator can also cut, censor or manipulate the user's traffic.
 
-*****.         INFOGRAPHIC   ************
+https://github.com/Shoalsteed/outproxies/blob/master/outproxies.png
+
 
 1. The browser sends the request to the HTTP proxy of the I2P router.
 2. The I2P router looks for the destination for the outproxy in the address book
