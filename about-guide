@@ -1,6 +1,6 @@
 Outproxies in I2P
 
-What is an outproxy?
+Was ist ein Outproxy?
 ===================
 
 I2P itself is an internal network. This means that it cannot connect to other networks without help. You can only access
@@ -21,7 +21,7 @@ contacts them. Next, the request (e.g. to Twitter or DuckDuckGo) is sent to the 
 instead of the user and receives a response. It forwards this to the user.
 The outproxy operator can also cut, censor or manipulate the user's traffic.
 
-outproxies.png
+!(outproxies.png)
 
 
 1. The browser sends the request to the HTTP proxy of the I2P router.
@@ -52,13 +52,15 @@ First you need the address of the outproxy. There are very few outproxies at the
 These include: outproxy.bandura.i2p, false.i2p, outproxy-tor.meeh.i2p
 All three route requests through the Tor network. This means that the requests at points 5 and 6 are routed through the Tor 
 network. One of the reasons why outproxy operators do this is because it gives them legal certainty.
-First go to the tunnel list in the I2P interface. This can usually be found at http://127.0.0.1:7657/i2ptunnelmgr. There you 
+First go to the tunnel list in the I2P interface. This can usually be found at http://127.0.0.1:7657/i2ptunnelmgr. There you
 select the tunnel for which you want to configure the outproxy. There you choose the zahrat to work on the tunnel.
+!(setup-1-en.svg)
 Next you will find a text box under “Outproxies” or “SSL Outproxies”. Outproxies are the outproxies that I2P uses for HTTP 
 connections; SSL Outproxies are the outproxies that are used for HTTPS connections. There you enter the corresponding 
 outproxies.
 It is also possible to enter several outproxies. You separate them with a comma. When requesting an outproxy, the router 
 randomly selects an outproxy.
+!(setup-2-en.svg)
 Then save the tunnel settings and you're done!
 Make sure that the outproxy is entered in the address book. The best way to check it is to go to the address of the outproxy. 
 If the message appears that the address was not found in the address book, a jumper can be used. Otherwise you can use the 
