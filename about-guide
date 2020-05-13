@@ -1,6 +1,6 @@
 Outproxies in I2P
 
-Was ist ein Outproxy?
+What is an outproxy?
 ===================
 
 I2P itself is an internal network. This means that it cannot connect to other networks without help. You can only access
