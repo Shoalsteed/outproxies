@@ -74,6 +74,116 @@ the answers. He can also censor pages, which is not that bad.
 There is roughly the same risk as when using the Tor network. The only difference is that the Tor network has more exit 
 nodes than I2P outproxies. It is therefore recommended that you use Tor to access the Clearnet.
 
+How can I run an outproxy?
+==========================
+Basics
+------
+First you should understand the system, how an outproxy works for the operator.
+
+Example 1 - I2P + Proxy:
+First you set up a proxy that runs on your own computer (the IP address of your
+own computer is always 127.0.0.1). Then you set up a tunnel in I2P so that i.e.
+takes its local computer, i.e. 127.0.0.1, as the server.
+Example 2 - I2P + Proxy + Tor:
+The configuration of I2P remains as in Example 1, only the configuration of the
+proxy becomes changed. Although it is still set to 127.0.0.1, it forwards all
+requests via the Tor network. To do this, Tor must be installed and provide a
+sock proxy. This sock proxy is then converted into an HTTP / HTTPS proxy by the
+actual proxy software.
+
+Set up outproxy
+---------------
+The following instructions show how to set up an outproxy under Debian 10 with
+the Java I2P router and the proxy software Privoxy. However, these instructions
+should also work with a few changes under Ubuntu.
+
+1. Install I2P: The first step is to install I2P.
+
+2. Install Privoxy:
+To do this, open a terminal (Ctrl + T) and enter the following:
+    sudo apt-get install privoxy
+It is important that you are in the sudo group and have the authorization to
+install programs with apt-get. This should normally be the case.
+
+4. Start Privoxy automatically after system start:
+By default, Privoxy runs on 127.0.0.1 and the Port 8118 without change. Open a
+browser for testing and call the address http://127.0.0.1:8118/. The following
+message should appear: "Invalid header received from client."
+If you don't get an answer, it may be necessary to start Privoxy. You do this with the following command:
+    sudo systemctl start privoxy
+
+5. Configure I2P - create tunnel
+Open http://127.0.0.1:7657/i2ptunnel/. A list of all I2P tunnels will appear.
+a. Click on "Tunnel Wizard"
+b. In the following step select "Server Tunnel" and click on "Next"
+c. Select "Standard" from the list and click on "Next"
+d. Choose a name for the outproxy e.g. B. "i2p-outproxy" and then click on "Next"
+e. Enter the address 127.0.0.1 for "Host:" and Port 8118 for "Port:". Then press
+the "Next" button
+f. Select the "Automatically start tunnel when router starts" option.
+g. Then click "Complete".
+h. Then check the tunnel configuration again:
+    Server or Client Tunnel ? Server
+    Tunnel Typ Standard
+    Tunnel Name i2p-outproxy
+    Tunnel description
+    Link address 127.0.0.1
+    Tunnel Port 8118
+    Start tunnel automatically ? Yes
+Then click on "Save tunnel"
+
+6. Configure I2P - edit tunnel
+a. To do this, click on the tooth advice at the Outproxy tunnel. Edit under the
+"Tunnel options" section. Choose a number as small as possible for "Length": the
+smaller the number, the faster the users reach the outproxy, but the less
+anonymous one is and vice versa. If possible, select "0 hop variance" under
+"Variance". Select a number as high as possible for "Number": The larger the
+number, the better integrated and the more stable the outproxy. If the number
+is high, his computer can also do more work because he has to process more tunnel
+requests. Select about 1 to 2 tunnels under "Number of replacement tunnels". If
+you frequently end tunnels unexpectedly, a height number is recommended. Then
+click Save.
+
+7. Configure I2P - start tunnel
+Next start the tunnel by clicking on "Start".
+
+Add Tor
+-------
+Many outproxy operators forward the requests via the Tor network. This has the
+advantage for the operators that they are only partially liable for the inquiries.
+They are therefore more on the "safe side". One advantage for users is that they
+can also access .onion domains (hidden services in the Tor network). However, it
+has drawbacks: The operator's computer / server is more expensive because it has
+to route all requests via the Tor network for the first time. However, this
+computing effort is extremely low with modern computers and is not noticeable.
+For the user of the outproxy, it has the disadvantage that the connection to a
+website is slower than without a Tor. This is because the requests pass not only
+through the I2P network, but also through the Tor network.
+The number of hops increases by three.
+
+### Install Tor
+To do this, open a terminal again (Ctrl + T) and enter the following:
+    sudo apt-get install tor
+To make Tor start with every system start, enter the following:
+    sudo systemctl enable tor
+To start Tor now enter:
+    sudo systemctl start tor
+
+### Configure Privoxy
+To forward the requests via the Tor network, you have to edit the Privoxy
+configuration file. These can be found under /etc/privoxy/config. You can edit
+them with Vim by entering the command sudo vim /etc/privoxy/config
+!(outproxy-privoxy-1.png)
+In the file you go to the fifth section "FORWARDING".
+In this section you add the following:
+    forward-socks4 / 127.0.0.1:9050 .
+    forward-socks4a / 127.0.0.1:9050 .
+    forward-socks5 / 127.0.0.1:9050 .
+    forward-socks5t / 127.0.0.1:9050 .
+127.0.0.1:9050 is the address on which the Tor Socks proxy runs.
+Then save the file and restart Privoxy. You do this with:
+    sudo systemctl restart privoxy
+
 Glossary
 ========
 
@@ -82,3 +192,14 @@ Request - This is an HTTP request. This contains e.g. the page, the desired lang
 Response - This is the response to the HTTP request. This contains the code for the page later displayed in the browser
 Web server - This is the name of the computer on which one or more websites are located.
 Clearnet - This term denotes that "normal" internet; by also having Twitter or DuckDuckGo at home.
+Hop: At I2P, the term hop is used to refer to the computers via which the requests are forwarded.
+Tor uses three hops (called Tor Relays). This cannot be changed at Tor.
+Three were chosen because it was thought that this was a good compromise
+between anonymity and speed. Replacement tunnels - replacement tunnels are tunnels
+that are used when a "normal" tunnel breaks away unexpectedly, e.g. because a
+subscriber is no longer available.
+Vim: Vim itself is a console editor. It is based on vi. To write to a file, type
+"i" (i means insert). To finish editing, type Ctrl+C and then: wq (w means write
+and q means quit).
+If a message appears that you do not have sufficient permissions to edit the
+file, you can start vim as sudo.

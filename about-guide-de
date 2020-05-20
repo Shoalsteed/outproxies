@@ -72,8 +72,8 @@ unter http://127.0.0.1:7657/i2ptunnelmgr zu finden. Dort wählt man den
 Tunnel aus, für welchen man den Outproxy konfigurieren möchte. Dort wählt
 man das Zahnrat, um den Tunnel zu bearbeiten.
 !(setup-1-de.svg)
-Als nächstes findet man unter „Ausgehende Proxies“ (Outproxies) bzw. „SSL-
-Ausgangsproxies“ (SSL Outproxies) eine Textbox. Ausgehende Proxies sind die
+Als nächstes findet man unter "Ausgehende Proxies" (Outproxies) bzw. "SSL-
+Ausgangsproxies" (SSL Outproxies) eine Textbox. Ausgehende Proxies sind die
 Outproxies, welche I2P bei HTTP Verbindungen benutzt; SSL-
 Ausgangsproxies sind die Outproxies, welche bei HTTPS-Verbindungen
 benutzt werden. Dort trägt man die entsprechenden Outproxies ein.
@@ -100,15 +100,153 @@ Netzwerkes. Der Unterschied besteht nur darin, dass das Tor-Netzwerk mehr
 Exit-Nodes hat als I2P Outproxies. Es wird daher empfohlen, dass wenn man
 im Clearnet surfen möchte, man Tor benutzt.
 
+Wie kann ich einen Outproxy betreiben?
+======================================
+Grundlagen
+----------
+An erstes sollte man das System verstehen, wie ein Outproxy für den
+Betreiber funktioniert.
+Beispiel 1 - I2P + Proxy:
+Zu erst richtet man einen Proxy ein, welcher auf seinem eigenen Computer
+lauft (die IP-Adresse des eigenen Computer ist immer 127.0.0.1). Dann richtet
+man in I2P einen Tunnel so ein, dass er als Server seinen lokalen Computer,
+also 127.0.0.1, nimmt.
+Beispiel 2 - I2P + Proxy + Tor:
+Die Konfiguration von I2P bleibt wie bei Beispiel 1, nur die Konfiguration des
+Proxy‘s wird geändert. Er ist zwar immer noch auf 127.0.0.1 eingerichtet,
+leitet aber alle Anfragen über das Tor-Netzwerk weiter. Dafür muss Tor
+installiert sein und einen Sock-Proxy bereit stellen. Dieser Sock-Proxy wird
+dann in einen HTTP/HTTPS-Proxy von der eigentlichen Proxy-Software
+umgewandelt.
+
+Outproxy einrichten
+-------------------
+In der Folgenden Anleitung, wird die Einrichtung eines Outproxy unter
+Debian 10 mit dem Java I2P Router und der Proxy-Software Privoxy gezeigt.
+Diese Anleitung dürfte allerdings auch mit ein paar Änderungen unter Ubuntu
+funktionieren.
+
+1. I2P installieren: Der erste Schritt besteht darin, I2P zu installieren.
+
+2. Privoxy installieren:
+Öffne dafür ein Terminal (Ctrl+T) und gebe folgendes ein:
+    sudo apt-get install privoxy
+Wichtig dabei ist, dass du in der sudo-Gruppe bist und die Berechtigung
+verfügst, Programme mit apt-get zu installieren. Dies sollte im Normalfall so
+sein.
+
+3. Privoxy automatisch nach Systemstart starten:
+Gebe dafür als nächstes in das Terminal folgendes ein:
+    sudo systemctl enable privoxy
+
+4. Privoxy testen:
+Standardmäßig ohne Änderung lauft Privoxy auf 127.0.0.1 und dem Port
+8118. Öffne zum Testen einen Browser und rufe die Adresse
+http://127.0.0.1:8118/. Es dürfte folgende Meldung erscheinen: "Invalid
+header received from client." Sollte man keine Antwort bekommen ist es vielleicht noch notwendig
+Privoxy zu starten. Dies tut man mit folgendem Befehl:
+    sudo systemctl start privoxy
+
+5. I2P konfigurieren - Tunnel erstellen
+Öffne dazu http://127.0.0.1:7657/i2ptunnel/. Es erscheint eine Liste mit
+allen Tunneln von I2P.
+a. Klicke auf "Tunnel Wizard"
+b. Wähle im folgendem Schritt "Server Tunnel" und klicke auf
+"Nächstes"
+c. Wähle in der Liste "Standard" und klicke auf "Nächstes"
+d. Wähle einen Namen für den Outproxy z. B. "i2p-outproxy" und klicke
+dann auf "Nächstes"
+e. Gebe bei "Host:" die Adresse 127.0.0.1 ein und bei "Port:" den Port
+8118. Drücke danach auf den Button "Nächstes"
+f. Wähle die Option "Tunnel automatisch starten wenn der Router
+startet" aus.
+g. Klicke dann auf "Abschließen".
+h. Überprüfe danach noch einmal die Tunnelkonfiguration:
+    Server oder Client Tunnel ? Server
+    Tunnel Typ Standard
+    Tunnel Name i2p-outproxy
+    Tunnel Beschreibung
+    Adresse zum Anbinden 127.0.0.1
+    Tunnel Port 8118
+    Tunnel automatisch starten ? Yes
+Klicke danach auf "Speichere Tunnel"
+
+6. I2P konfigurieren - Tunnel bearbeiten
+a. Klicke dazu auf das Zahnrat bei dem Outproxy-Tunnel.
+Bearbeite unter dem Anschnitt "Tunneloptionen". Wähle bei "Länge"
+eine möglichst kleine Zahl: Um so kleiner die Zahl, umso schneller erreichen
+die Benutzer den Outproxy, aber umso weniger Anonym ist man und
+umgekehrt. Wähle bei "Varianz" nach Möglichkeit "0 Hop Varianz" aus.
+Wähle bei "Anzahl" eine möglichst Hohe Zahl aus: Umso größer die Zahl
+umso, besser integriert und umso stabiler ist der Outproxy. Bei einer hohen
+Zahl kann sein Computer aber auch mehr Arbeiten, da er mehr
+Tunnelanfragen bearbeiten muss. Wähle bei "Anzahl an Ersatztunneln"
+etwa 1 bis 2 Tunnel aus. Wenn bei dir öfters Tunnel unerwartet beendet
+werden, empfiehlt sich eine Höhe Anzahl. Klicke anschließend auf Speichern.
+
+7. I2P konfigurieren - Tunnel starten
+Starte als nächstes den Tunnel, indem zu auf "Start" klickst.
+
+Tor hinzufügen
+--------------
+Viele Outproxybetriber leiten die Anfragen über das Tor-Netzwerk weiter. Dies
+hat für die Betreiber den Vorteil, dass sie nur bedingt für die Anfragen haften.
+Sie sind somit eher auf der "sicheren Seite". Ein Vorteil für die Benutzer
+besteht darin, dass sie auch auf .onion-Domains (Hidden Services im Tor-
+Netzwerk) zugreifen können. Es hat allerdings auf Nachteile: Für den
+Computer/Server des Betreibers fällt ein höhrer Rechenaufwand an, da er
+ersteinmal alle Anfragen über das Tor-Netzwerk leiten muss. Dieser
+Rechenaufwand ist allerdings bei mordernen Computer extrem gering und
+fällt nicht weiter auf. Für den Benutzer des Outproxy‘s hat es den Nachteil,
+dass die Verbindung zu einer Website langsamer wird als ohne Tor. Dies liegt
+darin, dass die Anfragen nicht nur das I2P-Netzwerk passieren, sondern auch
+das Tor-Netzwerk. Die Anzahl der Hops vergrößert sich also um drei.
+
+### Tor installieren
+Dafür öffnet man wieder ein Terminal (Ctrl+T) und gibt folgendes ein:
+    sudo apt-get install tor
+Damit Tor bei jedem Systemstart mitstartet gibt man noch folgendes ein:
+    sudo systemctl enable tor
+Um Tor jetzt zu starten gebe folgendes ein:
+    sudo systemctl start tor
+
+### Privoxy konfigurieren
+Um die Anfragen über das Tor-Netzwerk weiterzuleiten, muss man die Privoxy
+Konfigurations-Datei bearbeiten. Diese findet man unter /etc/privoxy/config
+Man kann diese mit Vim bearbeiten, indem man den Befehl sudo vim
+/etc/privoxy/config eingibt.
+!(outproxy-privoxy-1.png)
+In der Datei geht man zum fünften Abschnitt "FORWARDING".
+In diesem Abschnitt fügt man folgendes ein:
+    forward-socks4 / 127.0.0.1:9050 .
+    forward-socks4a / 127.0.0.1:9050 .
+    forward-socks5 / 127.0.0.1:9050 .
+    forward-socks5t / 127.0.0.1:9050 .
+127.0.0.1:9050 ist die Adresse auf der der Tor-Socks-Proxy lauft.
+Danach speichert man die Datei ab und startet Privoxy neu. Dies tut man mit:
+    sudo systemctl restart privoxy
+
 Glossar
 =======
-Eepsite – Eine I2P interne Seite. Diese Domains haben immer die Endung .i2p
-Ziel – Vergleichbar mit der IP-Adresse im Clearnet. Mit dem Ziel wird hier der Outproxy
+Eepsite - Eine I2P interne Seite. Diese Domains haben immer die Endung .i2p
+Ziel - Vergleichbar mit der IP-Adresse im Clearnet. Mit dem Ziel wird hier der Outproxy
 identifiziert
-Anfrage – Dabei handelt es sich hier um eine HTTP-Anfrage. Diese enthält z. B. die Seite, die
+Anfrage - Dabei handelt es sich hier um eine HTTP-Anfrage. Diese enthält z. B. die Seite, die
 gewünschte Sprache und die Uhrzeit
-Antwort – Dabei handelt es sich hier, um die Antwort auf die HTTP-Anfrage. Diese enthält den
-Code für die später im Browser dargestellte SeiteWebserver – Damit bezeichnet man die Computer, auf denen eine oder mehrere Webseiten
+Antwort - Dabei handelt es sich hier, um die Antwort auf die HTTP-Anfrage. Diese enthält den
+Code für die später im Browser dargestellte SeiteWebserver - Damit bezeichnet man die Computer, auf denen eine oder mehrere Webseiten
 liegen.
-Clearnet – Dieser Begriff bezeichnet, dass „normale“ Internet; indem auch Twitter oder
+Clearnet - Dieser Begriff bezeichnet, dass "normale" Internet; indem auch Twitter oder
 DuckDuckGo zu Hause sind.
+Hop: Als Hop bezeichnet man bei I2P, die Computer über die, die Anfragen
+weitergeleitet werden. Tor verwendet drei Hops (bei Tor Relays genannt). Dies
+ist bei Tor nicht änderbar. Drei hat man gewählt, da man sich dachte, dass
+dies ein guter Kompromiss zwischen Anonymität und Geschwindigkeit sei.
+Ersatztunnel - Ersatztunnel, sind Tunnel, welche benutzt werden, wenn ein "normaler"
+Tunnel unerwartet wegbricht, z. B. weil ein Teilnehmer nicht mehr verfügbar
+ist.
+Vim: Vim ansich ist ein Konsolen Editor. Er basiert auf vi. Um in eine Datei zu
+schreiben gibt man "i" (i bedeutet insert) ein. Um die Bearbeitung abzuschlißen
+gibt man Ctrl+C und dann :wq ein. Sollte eine Meldung erscheinen, dass man nicht
+ausreichend Berechtigungen hätte, um die Datei zu bearbeiten, kann man vim als
+sudo starten.
