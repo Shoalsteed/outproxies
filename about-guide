@@ -104,6 +104,7 @@ To do this, open a terminal (Ctrl + T) and enter the following:
     sudo apt-get install privoxy
 It is important that you are in the sudo group and have the authorization to
 install programs with apt-get. This should normally be the case.
+!(run-outproxy/run-outproxy-1.png)
 
 4. Start Privoxy automatically after system start:
 By default, Privoxy runs on 127.0.0.1 and the Port 8118 without change. Open a
@@ -111,16 +112,23 @@ browser for testing and call the address http://127.0.0.1:8118/. The following
 message should appear: "Invalid header received from client."
 If you don't get an answer, it may be necessary to start Privoxy. You do this with the following command:
     sudo systemctl start privoxy
+!(run-outproxy/run-outproxy-2.png)
 
 5. Configure I2P - create tunnel
 Open http://127.0.0.1:7657/i2ptunnel/. A list of all I2P tunnels will appear.
 a. Click on "Tunnel Wizard"
+!(run-outproxy/run-outproxy-3.png)
 b. In the following step select "Server Tunnel" and click on "Next"
+!(run-outproxy/run-outproxy-4.png)
 c. Select "Standard" from the list and click on "Next"
+!(run-outproxy/run-outproxy-5.png)
 d. Choose a name for the outproxy e.g. B. "i2p-outproxy" and then click on "Next"
+!(run-outproxy/run-outproxy-6.png)
 e. Enter the address 127.0.0.1 for "Host:" and Port 8118 for "Port:". Then press
 the "Next" button
+!(run-outproxy/run-outproxy-7.png)
 f. Select the "Automatically start tunnel when router starts" option.
+!(run-outproxy/run-outproxy-8.png)
 g. Then click "Complete".
 h. Then check the tunnel configuration again:
     Server or Client Tunnel ? Server
@@ -131,21 +139,29 @@ h. Then check the tunnel configuration again:
     Tunnel Port 8118
     Start tunnel automatically ? Yes
 Then click on "Save tunnel"
+!(run-outproxy/run-outproxy-10.png)
 
 6. Configure I2P - edit tunnel
-a. To do this, click on the tooth advice at the Outproxy tunnel. Edit under the
-"Tunnel options" section. Choose a number as small as possible for "Length": the
+To do this, click on the tooth advice at the Outproxy tunnel.
+!(run-outproxy/run-outproxy-10.png)
+Edit under the "Tunnel options" section. Choose a number as small as possible for "Length": the
 smaller the number, the faster the users reach the outproxy, but the less
 anonymous one is and vice versa. If possible, select "0 hop variance" under
 "Variance". Select a number as high as possible for "Number": The larger the
 number, the better integrated and the more stable the outproxy. If the number
 is high, his computer can also do more work because he has to process more tunnel
 requests. Select about 1 to 2 tunnels under "Number of replacement tunnels". If
-you frequently end tunnels unexpectedly, a height number is recommended. Then
-click Save.
-
-7. Configure I2P - start tunnel
-Next start the tunnel by clicking on "Start".
+you frequently end tunnels unexpectedly, a height number is recommended.
+!(run-outproxy/run-outproxy-11.png)
+Next, go down to the limit settings and change the default values. We recommend
+per client: 40 per minute - 1000 per hour - 10000 per day. For Total, we recommend
+setting all values to 0. With these settings, the outproxy will not display the
+message "Too many Requests". This can lead to undesirable effects when the user
+is used intensively. However, it may also mean that more power and bandwidth of
+the server is used.
+!(run-outproxy/run-outproxy-12.png)
+Then click Save.
+!(run-outproxy/run-outproxy-13.png)
 
 Add Tor
 -------
@@ -164,25 +180,29 @@ The number of hops increases by three.
 ### Install Tor
 To do this, open a terminal again (Ctrl + T) and enter the following:
     sudo apt-get install tor
+!(run-outproxy/run-outproxy-14.png)
 To make Tor start with every system start, enter the following:
     sudo systemctl enable tor
-To start Tor now enter:
-    sudo systemctl start tor
+!(run-outproxy/run-outproxy-15.png)
 
 ### Configure Privoxy
 To forward the requests via the Tor network, you have to edit the Privoxy
 configuration file. These can be found under /etc/privoxy/config. You can edit
 them with Vim by entering the command sudo vim /etc/privoxy/config
-!(outproxy-privoxy-1.png)
+!(run-outproxy/run-outproxy-16.png)
+!(run-outproxy/run-outproxy-17.png)
 In the file you go to the fifth section "FORWARDING".
+!(run-outproxy/run-outproxy-18.png)
 In this section you add the following:
     forward-socks4 / 127.0.0.1:9050 .
     forward-socks4a / 127.0.0.1:9050 .
     forward-socks5 / 127.0.0.1:9050 .
     forward-socks5t / 127.0.0.1:9050 .
+!(run-outproxy/run-outproxy-19.png)
 127.0.0.1:9050 is the address on which the Tor Socks proxy runs.
 Then save the file and restart Privoxy. You do this with:
     sudo systemctl restart privoxy
+!(run-outproxy/run-outproxy-20.png)
 
 Glossary
 ========
