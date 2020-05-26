@@ -49,7 +49,7 @@ How do I set up an outproxy?
 ============================
 
 First you need the address of the outproxy. There are very few outproxies at the moment. 
-These include: outproxy.bandura.i2p, false.i2p, outproxy-tor.meeh.i2p
+These include: outproxy.bandura.i2p, false.i2p, outproxy-tor.meeh.i2p, purokishi.i2p
 All three route requests through the Tor network. This means that the requests at points 5 and 6 are routed through the Tor 
 network. One of the reasons why outproxy operators do this is because it gives them legal certainty.
 First go to the tunnel list in the I2P interface. This can usually be found at http://127.0.0.1:7657/i2ptunnelmgr. There you

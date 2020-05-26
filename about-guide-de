@@ -62,7 +62,7 @@ Wie richte ich einen Outproxy ein?
 
 Als erstes braucht man die Adresse des Outproxies. Leider gibt es im Moment
 sehr wenige Outproxies. Zu diesen gehören: outproxy.bandura.i2p, false.i2p,
-outproxy-tor.meeh.i2p
+outproxy-tor.meeh.i2p, purokishi.i2p
 Alle drei leiten die Anfragen über das Tor-Netzwerk. Dies bedeutet das die
 Anfrage bei Punkt 5 und 6 durch das Tor-Netzwerk geleitet werden. Einer der
 Gründe, warum Outproxybetreiber dies tun, ist das es ihnen Rechtssicherheit
