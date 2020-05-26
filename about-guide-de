@@ -82,6 +82,10 @@ mit einem Komma. Bei einer Anfrage an einen Outproxy wählt der Router
 zufällig einen Outproxy aus.
 !(setup-2-de.svg)
 Danach speichert man die Tunneleinstellungen und fertig!
+(Bei purokishi.i2p ist es erforderlich, dass beide Verschlüsselungsarten
+aktiviert sind. Dies kann man in den Tunneleinstellungen unter "Verschlüsselungs
+Algorythmen" tun. Dabei muss der Tunnel gestoppt sein. (Wird ein Tunnel mit
+anderen Klienten geteilt, müssen entsprechend alle Klienten gestoppt werden.))
 
 ___Achte darauf____, dass der Outproxy im Adressbuch eingetragen ist. Am besten
 kannst du es überprüfen, indem du die Adresse des Outproxies aufrufst.

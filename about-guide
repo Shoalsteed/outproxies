@@ -62,6 +62,11 @@ It is also possible to enter several outproxies. You separate them with a comma.
 randomly selects an outproxy.
 !(setup-2-en.svg)
 Then save the tunnel settings and you're done!
+(With purokishi.i2p it is necessary that both types of encryption are activated.
+This can be done in the tunnel settings under * encryption algorithms *. The
+tunnel must be stopped. (If a tunnel is shared with other clients, all clients
+must be stopped accordingly.))
+
 Make sure that the outproxy is entered in the address book. The best way to check it is to go to the address of the outproxy. 
 If the message appears that the address was not found in the address book, a jumper can be used. Otherwise you can use the 
 outproxy immediately.
